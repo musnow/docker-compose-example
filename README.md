@@ -8,14 +8,14 @@
 
 我这里使用 centos 7 进行示例，如果你使用别的发行版本请参考官方文档
 
-1.系统更新
+1. 系统更新
 
 ```
 yum update -y
 ```
 
-2.安装 docker
-Docker 官方提供了一个存储库。我们可以使用他进行安装
+2. 安装 docker
+   Docker 官方提供了一个存储库。我们可以使用他进行安装
 
 ```
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -38,17 +38,16 @@ docker run hello-world
 
 ```
 systemctl enable docker
-
 ```
 
-3.安装 Docker-compose
+3. 安装 Docker-compose
 
 ```
 curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ```
 
-4.启动
+4. 启动
 
 ```
 git clone https://github.com/musnow/docker-compose-example.git
@@ -59,5 +58,7 @@ cd docker-compose-example
 # 参考文章
 
 https://docs.docker.com/compose/
+
 https://github.com/docker/compose/releases/
+
 https://www.vultr.com/docs/deploy-a-php-application-using-docker-compose
