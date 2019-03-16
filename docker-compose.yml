@@ -1,0 +1,29 @@
+version: '2'
+services:
+  # 服务名称
+  php:
+    # 打包目录
+    build: ./php/
+    # 挂载目录
+    volumes:
+      - ./www/:/app
+    # 工作目录
+    working_dir: /app
+  redis:
+    # 镜像名称 可以从官方市场或私有库中拉取
+    image: redis
+    depends_on:
+      - php
+    ports:
+      - 6379:6379
+  web:
+    build: ./nginx/
+    volumes:
+      - ./www/:/app
+    # 依赖服务,设置后会在该服务后拉起
+    depends_on:
+      - php
+    # 映射端口到本机
+    ports:
+      - 80:80
+      - 443:443
