@@ -1,27 +1,38 @@
 version: '2'
 services:
-  # 服务名称
   php:
-    # 打包目录
     build: ./php/
-    # 挂载目录
     volumes:
       - ./www/:/app
-    # 工作目录
     working_dir: /app
   redis:
-    # 镜像名称 可以从官方市场或私有库中拉取
     image: redis
     depends_on:
       - php
   web:
     build: ./nginx/
     volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
       - ./www/:/app
-    # 依赖服务,设置后会在该服务后拉起
+    labels:
+      - sh.acme.autoload.domain=${domain}
     depends_on:
       - php
-    # 映射端口到本机
     ports:
-      - 80:80
       - 443:443
+  acme.sh:
+    image: neilpang/acme.sh
+    container_name: acme.sh
+    command: daemon
+    volumes:
+      - ./acmeout:/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DP_Id=${DP_Id}
+      - DP_Key=${DP_Key}
+      - DEPLOY_DOCKER_CONTAINER_LABEL=sh.acme.autoload.domain=${domain}
+      - DEPLOY_DOCKER_CONTAINER_KEY_FILE="/etc/nginx/conf.d/conf/ssl/${domain}/key.pem"
+      - DEPLOY_DOCKER_CONTAINER_CERT_FILE="/etc/nginx/conf.d/conf/ssl/${domain}/cert.pem"
+      - DEPLOY_DOCKER_CONTAINER_CA_FILE="/etc/nginx/conf.d/conf/ssl/${domain}/ca.pem"
+      - DEPLOY_DOCKER_CONTAINER_FULLCHAIN_FILE="/etc/nginx/conf.d/conf/ssl/${domain}/full.pem"
+      - DEPLOY_DOCKER_CONTAINER_RELOAD_CMD="nginx -s reload"
